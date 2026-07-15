@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CyberShield AI - Explainable AI-powered cybersecurity threat detection platform with Bayesian risk modeling and real-time monitoring.">
+    <meta name="keywords" content="cybersecurity, AI, threat detection, explainable AI, SHAP, LIME, anomaly detection">
+    <meta name="author" content="CyberShield AI Team">
+    <title>CyberShield AI - Explainable Cybersecurity Threat Detection</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="animations.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%2300D9FF' width='100' height='100'/%3E%3Ctext x='50' y='65' font-size='80' fill='%230D1117' text-anchor='middle' font-weight='bold'%3E⚔%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <span class="logo-icon">🛡️</span>
+                    <span class="logo-text">CyberShield AI</span>
+                </div>
+                <div class="nav-links">
+                    <a href="#features" class="nav-link">Features</a>
+                    <a href="#stats" class="nav-link">Impact</a>
+                    <a href="#tech" class="nav-link">Technology</a>
+                    <a href="#footer" class="nav-link">Contact</a>
+                </div>
+                <div class="nav-buttons">
+                    <a href="https://github.com/gunjit007/CyberShield-AI" class="btn btn-secondary" target="_blank" rel="noopener">
+                        <span class="github-icon">⭐</span> GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <!-- Animated Background Elements -->
+        <div class="hero-background">
+            <!-- Particle System -->
+            <div class="particles" id="particles"></div>
+            
+            <!-- Network Grid -->
+            <svg class="network-grid" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+                <defs>
+                    <linearGradient id="gridGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#00D9FF;stop-opacity:0.1" />
+                        <stop offset="100%" style="stop-color:#0969DA;stop-opacity:0.05" />
+                    </linearGradient>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                <g class="grid-lines">
+                    <line x1="0" y1="100" x2="1200" y2="100" stroke="url(#gridGradient)" stroke-width="1" opacity="0.3"/>
+                    <line x1="0" y1="200" x2="1200" y2="200" stroke="url(#gridGradient)" stroke-width="1" opacity="0.3"/>
+                    <line x1="0" y1="300" x2="1200" y2="300" stroke="url(#gridGradient)" stroke-width="1" opacity="0.25"/>
+                    <line x1="0" y1="400" x2="1200" y2="400" stroke="url(#gridGradient)" stroke-width="1" opacity="0.3"/>
+                    <line x1="0" y1="500" x2="1200" y2="500" stroke="url(#gridGradient)" stroke-width="1" opacity="0.25"/>
+                    <line x1="0" y1="600" x2="1200" y2="600" stroke="url(#gridGradient)" stroke-width="1" opacity="0.3"/>
+                    <line x1="0" y1="700" x2="1200" y2="700" stroke="url(#gridGradient)" stroke-width="1" opacity="0.25"/>
+                    
+                    <line x1="150" y1="0" x2="150" y2="800" stroke="url(#gridGradient)" stroke-width="1" opacity="0.2"/>
+                    <line x1="300" y1="0" x2="300" y2="800" stroke="url(#gridGradient)" stroke-width="1" opacity="0.25"/>
+                    <line x1="450" y1="0" x2="450" y2="800" stroke="url(#gridGradient)" stroke-width="1" opacity="0.2"/>
+                    <line x1="600" y1="0" x2="600" y2="800" stroke="url(#gridGradient)" stroke-width="1" opacity="0.3"/>
+                    <line x1="750" y1="0" x2="750" y2="800" stroke="url(#gridGradient)" stroke-width="1" opacity="0.2"/>
+                    <line x1="900" y1="0" x2="900" y2="800" stroke="url(#gridGradient)" stroke-width="1" opacity="0.25"/>
+                    <line x1="1050" y1="0" x2="1050" y2="800" stroke="url(#gridGradient)" stroke-width="1" opacity="0.2"/>
+                </g>
+                <g class="grid-nodes" filter="url(#glow)">
+                    <circle cx="150" cy="100" r="3" fill="#00D9FF" opacity="0.6" class="node-pulse"/>
+                    <circle cx="300" cy="200" r="2.5" fill="#0969DA" opacity="0.5" class="node-pulse" style="animation-delay: 0.2s"/>
+                    <circle cx="450" cy="150" r="3" fill="#00D9FF" opacity="0.6" class="node-pulse" style="animation-delay: 0.4s"/>
+                    <circle cx="600" cy="300" r="3" fill="#0969DA" opacity="0.6" class="node-pulse" style="animation-delay: 0.6s"/>
+                    <circle cx="750" cy="200" r="2.5" fill="#00D9FF" opacity="0.5" class="node-pulse" style="animation-delay: 0.3s"/>
+                    <circle cx="900" cy="400" r="3" fill="#0969DA" opacity="0.6" class="node-pulse" style="animation-delay: 0.5s"/>
+                    <circle cx="1050" cy="250" r="2.5" fill="#00D9FF" opacity="0.5" class="node-pulse" style="animation-delay: 0.7s"/>
+                    <circle cx="200" cy="500" r="3" fill="#00D9FF" opacity="0.6" class="node-pulse" style="animation-delay: 0.1s"/>
+                    <circle cx="550" cy="600" r="2.5" fill="#0969DA" opacity="0.5" class="node-pulse" style="animation-delay: 0.4s"/>
+                    <circle cx="800" cy="700" r="3" fill="#00D9FF" opacity="0.6" class="node-pulse" style="animation-delay: 0.2s"/>
+                </g>
+                <g class="network-connections" stroke="#00D9FF" stroke-width="1" opacity="0.3">
+                    <line x1="150" y1="100" x2="300" y2="200" class="connection-line"/>
+                    <line x1="300" y1="200" x2="450" y2="150" class="connection-line" style="animation-delay: 0.2s"/>
+                    <line x1="450" y1="150" x2="600" y2="300" class="connection-line" style="animation-delay: 0.4s"/>
+                    <line x1="600" y1="300" x2="750" y2="200" class="connection-line" style="animation-delay: 0.1s"/>
+                    <line x1="750" y1="200" x2="900" y2="400" class="connection-line" style="animation-delay: 0.3s"/>
+                    <line x1="200" y1="500" x2="550" y2="600" class="connection-line" style="animation-delay: 0.2s"/>
+                    <line x1="550" y1="600" x2="800" y2="700" class="connection-line" style="animation-delay: 0.5s"/>
+                </g>
+            </svg>
+            
+            <!-- Cyber Glow Orbs -->
+            <div class="glow-orb orb-1"></div>
+            <div class="glow-orb orb-2"></div>
+            <div class="glow-orb orb-3"></div>
+        </div>
+
+        <!-- Hero Content -->
+        <div class="hero-content">
+            <div class="container">
+                <div class="hero-text">
+                    <h1 class="hero-title" style="animation: fadeInDown 1s ease-out">
+                        <span class="title-word">CyberShield</span>
+                        <span class="title-word highlight">AI</span>
+                    </h1>
+                    
+                    <p class="hero-subtitle" style="animation: fadeInUp 1s ease-out 0.2s both">
+                        Explainable AI-Powered Cybersecurity Threat Detection Platform
+                    </p>
+                    
+                    <p class="hero-description" style="animation: fadeInUp 1s ease-out 0.4s both">
+                        Detect network anomalies and phishing threats with advanced machine learning, Bayesian risk fusion, and interpretable AI explanations using SHAP & LIME.
+                    </p>
+                    
+                    <div class="hero-buttons" style="animation: fadeInUp 1s ease-out 0.6s both">
+                        <a href="#features" class="btn btn-primary">
+                            <span class="btn-icon">▶</span>
+                            Start Analysis
+                        </a>
+                        <a href="https://github.com/gunjit007/CyberShield-AI/wiki" class="btn btn-secondary" target="_blank">
+                            <span class="btn-icon">📊</span>
+                            Live Dashboard
+                        </a>
+                        <a href="#features" class="btn btn-tertiary">
+                            <span class="btn-icon">🔍</span>
+                            View Explainability
+                        </a>
+                        <a href="https://github.com/gunjit007/CyberShield-AI" class="btn btn-ghost" target="_blank" rel="noopener">
+                            <span class="btn-icon">⭐</span>
+                            GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator" style="animation: fadeInDown 1s ease-out 1.2s both">
+            <div class="scroll-text">Scroll to explore</div>
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Powerful Threat Detection</h2>
+                <p>Six integrated modules delivering enterprise-grade security</p>
+            </div>
+
+            <div class="features-grid">
+                <!-- Feature 1: Statistical Detection -->
+                <div class="feature-card" style="animation: fadeInUp 0.8s ease-out">
+                    <div class="feature-icon gradient-1">
+                        <span>📊</span>
+                    </div>
+                    <h3>Statistical Detection</h3>
+                    <p>IsolationForest + OneClassSVM ensemble detects network anomalies with 0.999 AUC precision.</p>
+                    <div class="feature-stats">
+                        <div class="stat">
+                            <span class="stat-value">0.999</span>
+                            <span class="stat-label">AUC</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">0.96</span>
+                            <span class="stat-label">Recall</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 2: Bayesian Fusion -->
+                <div class="feature-card" style="animation: fadeInUp 0.8s ease-out 0.1s both">
+                    <div class="feature-icon gradient-2">
+                        <span>⚙️</span>
+                    </div>
+                    <h3>Bayesian Risk Fusion</h3>
+                    <p>Genuine Bayesian updating combines multiple evidence channels for calibrated risk scores.</p>
+                    <div class="feature-stats">
+                        <div class="stat">
+                            <span class="stat-value">0.9999</span>
+                            <span class="stat-label">AUC (Phishing)</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">0.049</span>
+                            <span class="stat-label">Brier Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 3: Explainable AI -->
+                <div class="feature-card" style="animation: fadeInUp 0.8s ease-out 0.2s both">
+                    <div class="feature-icon gradient-3">
+                        <span>🧠</span>
+                    </div>
+                    <h3>Explainable AI (XAI)</h3>
+                    <p>SHAP & LIME provide local and global interpretability for every prediction.</p>
+                    <div class="feature-stats">
+                        <div class="stat">
+                            <span class="stat-value">99.6%</span>
+                            <span class="stat-label">Fidelity</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">SHAP</span>
+                            <span class="stat-label">LIME</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 4: Incident Response -->
+                <div class="feature-card" style="animation: fadeInUp 0.8s ease-out 0.3s both">
+                    <div class="feature-icon gradient-4">
+                        <span>🚀</span>
+                    </div>
+                    <h3>Incident Response</h3>
+                    <p>LLM-driven orchestrator generates automated response playbooks for critical threats.</p>
+                    <div class="feature-stats">
+                        <div class="stat">
+                            <span class="stat-value">Auto</span>
+                            <span class="stat-label">Playbook Gen</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">>70%</span>
+                            <span class="stat-label">Threshold</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 5: Dashboard -->
+                <div class="feature-card" style="animation: fadeInUp 0.8s ease-out 0.4s both">
+                    <div class="feature-icon gradient-5">
+                        <span>📈</span>
+                    </div>
+                    <h3>Interactive Dashboard</h3>
+                    <p>Real-time Streamlit dashboard with Plotly visualizations and threat exploration.</p>
+                    <div class="feature-stats">
+                        <div class="stat">
+                            <span class="stat-value">3</span>
+                            <span class="stat-label">Pages</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">Real-time</span>
+                            <span class="stat-label">Updates</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 6: Real-Time Monitoring -->
+                <div class="feature-card" style="animation: fadeInUp 0.8s ease-out 0.5s both">
+                    <div class="feature-icon gradient-6">
+                        <span>🔔</span>
+                    </div>
+                    <h3>Real-Time Monitoring</h3>
+                    <p>24/7 threat monitoring with instant alerts and threat intelligence integration.</p>
+                    <div class="feature-stats">
+                        <div class="stat">
+                            <span class="stat-value">24/7</span>
+                            <span class="stat-label">Monitoring</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">Instant</span>
+                            <span class="stat-label">Alerts</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Statistics Section -->
+    <section class="stats" id="stats">
+        <div class="container">
+            <div class="section-header">
+                <h2>Proven Impact</h2>
+                <p>Real-world performance metrics from production deployments</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card" style="animation: slideInUp 0.8s ease-out">
+                    <div class="stat-number" data-target="32000">0</div>
+                    <div class="stat-label">Network Events Analyzed</div>
+                    <div class="stat-description">Training dataset with 5% attack rate</div>
+                </div>
+                
+                <div class="stat-card" style="animation: slideInUp 0.8s ease-out 0.1s both">
+                    <div class="stat-number" data-target="22000">0</div>
+                    <div class="stat-label">Phishing Samples Detected</div>
+                    <div class="stat-description">Across 5 communication channels</div>
+                </div>
+                
+                <div class="stat-card" style="animation: slideInUp 0.8s ease-out 0.2s both">
+                    <div class="stat-number counter-percent" data-target="99">0</div>
+                    <span class="percent-sign">%</span>
+                    <div class="stat-label">Anomaly Detection AUC</div>
+                    <div class="stat-description">IsolationForest + OneClassSVM</div>
+                </div>
+                
+                <div class="stat-card" style="animation: slideInUp 0.8s ease-out 0.3s both">
+                    <div class="stat-number counter-decimal" data-target="9999">0</div>
+                    <div class="stat-label">Phishing Classifier AUC</div>
+                    <div class="stat-description">LightGBM with TF-IDF features</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Stack Section -->
+    <section class="tech" id="tech">
+        <div class="container">
+            <div class="section-header">
+                <h2>Technology Stack</h2>
+                <p>Built with industry-leading tools and frameworks</p>
+            </div>
+
+            <div class="tech-grid">
+                <div class="tech-category" style="animation: fadeInLeft 0.8s ease-out">
+                    <h3>Machine Learning</h3>
+                    <div class="tech-items">
+                        <div class="tech-item">scikit-learn</div>
+                        <div class="tech-item">LightGBM</div>
+                        <div class="tech-item">XGBoost</div>
+                        <div class="tech-item">IsolationForest</div>
+                    </div>
+                </div>
+
+                <div class="tech-category" style="animation: fadeInUp 0.8s ease-out 0.1s both">
+                    <h3>Explainability</h3>
+                    <div class="tech-items">
+                        <div class="tech-item">SHAP</div>
+                        <div class="tech-item">LIME</div>
+                        <div class="tech-item">Permutation Importance</div>
+                        <div class="tech-item">Feature Attribution</div>
+                    </div>
+                </div>
+
+                <div class="tech-category" style="animation: fadeInRight 0.8s ease-out 0.2s both">
+                    <h3>Dashboard & Viz</h3>
+                    <div class="tech-items">
+                        <div class="tech-item">Streamlit</div>
+                        <div class="tech-item">Plotly</div>
+                        <div class="tech-item">Pandas</div>
+                        <div class="tech-item">NumPy</div>
+                    </div>
+                </div>
+
+                <div class="tech-category" style="animation: fadeInDown 0.8s ease-out 0.3s both">
+                    <h3>LLM & Automation</h3>
+                    <div class="tech-items">
+                        <div class="tech-item">Anthropic Claude</div>
+                        <div class="tech-item">Playbook Generation</div>
+                        <div class="tech-item">Incident Orchestration</div>
+                        <div class="tech-item">Threat Intel API</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Deploy?</h2>
+                <p>Get started with CyberShield AI in minutes</p>
+                <div class="cta-buttons">
+                    <a href="https://github.com/gunjit007/CyberShield-AI#quick-start" class="btn btn-primary btn-large" target="_blank">
+                        <span class="btn-icon">🚀</span>
+                        Quick Start Guide
+                    </a>
+                    <a href="https://github.com/gunjit007/CyberShield-AI#documentation" class="btn btn-secondary btn-large" target="_blank">
+                        <span class="btn-icon">📚</span>
+                        Full Documentation
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>About CyberShield AI</h4>
+                    <p>An explainable AI-powered cybersecurity threat detection platform built for SOCs and AI hackathons.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="https://github.com/gunjit007/CyberShield-AI" target="_blank">GitHub Repository</a></li>
+                        <li><a href="https://github.com/gunjit007/CyberShield-AI/blob/main/README.md" target="_blank">README</a></li>
+                        <li><a href="https://github.com/gunjit007/CyberShield-AI/tree/main/module1" target="_blank">Module 1</a></li>
+                        <li><a href="https://github.com/gunjit007/CyberShield-AI/tree/main/module4" target="_blank">Module 4</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Technology</h4>
+                    <ul>
+                        <li><a href="#tech">ML Stack</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="https://github.com/gunjit007/CyberShield-AI/blob/main/module3/README.md" target="_blank">Dashboard</a></li>
+                        <li><a href="https://github.com/gunjit007/CyberShield-AI/blob/main/module2/README.md" target="_blank">Bayesian Layer</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Community</h4>
+                    <div class="social-links">
+                        <a href="https://github.com/gunjit007" class="social-link" title="GitHub" target="_blank" rel="noopener">GitHub</a>
+                        <a href="https://github.com/gunjit007/CyberShield-AI/issues" class="social-link" title="Issues" target="_blank" rel="noopener">Issues</a>
+                        <a href="https://github.com/gunjit007/CyberShield-AI/discussions" class="social-link" title="Discussions" target="_blank" rel="noopener">Discussions</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-divider"></div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 CyberShield AI. Built with ❤️ for explainable, production-quality AI in cybersecurity.</p>
+                <p style="margin-top: 8px; font-size: 12px; color: #8b949e;">
+                    🏆 Maverick Effect AI Challenge 2026 | 
+                    <a href="https://github.com/gunjit007/CyberShield-AI/blob/main/README.md" style="color: #00D9FF; text-decoration: none;" target="_blank">Open Source</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="particles.js"></script>
+    <script src="animations.js"></script>
+    <script src="interactions.js"></script>
+</body>
+</html>
