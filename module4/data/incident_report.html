@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Incident Report — Web/API Exploitation (Injection or Abuse)</title>
+<style>
+:root {
+    --primary-color: #00D9FF;
+    --secondary-color: #0969DA;
+    --accent-color: #DA3633;
+    --dark-bg: #0D1117;
+    --card-bg: #161B22;
+    --border-color: #30363D;
+    --text-primary: #E6EDF3;
+    --text-secondary: #8b949e;
+    --success-color: #1a7f37;
+    --warning-color: #d29922;
+}
+* { box-sizing: border-box; }
+body {
+    background: var(--dark-bg);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    line-height: 1.6;
+}
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.print-btn {
+    background: var(--card-bg);
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 8px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: box-shadow 0.2s ease;
+}
+.print-btn:hover { box-shadow: 0 0 16px rgba(0, 217, 255, 0.4); }
+h1 {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 16px;
+    font-size: 1.8rem;
+    text-shadow: 0 0 30px rgba(0, 217, 255, 0.3);
+}
+h2 {
+    color: var(--primary-color);
+    margin-top: 40px;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+h2 .tag {
+    font-size: 0.7rem;
+    font-weight: normal;
+    font-style: italic;
+    color: var(--text-secondary);
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2px 10px;
+}
+h2 .tag.llm { color: var(--primary-color); border-color: var(--primary-color); }
+.meta-box {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    box-shadow: 0 20px 40px rgba(0, 217, 255, 0.1);
+}
+.meta-box div { margin: 6px 0; }
+.risk-badge {
+    display: inline-block;
+    padding: 4px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+.risk-Critical { background: rgba(218, 54, 51, 0.15); color: var(--accent-color); border: 1px solid var(--accent-color); box-shadow: 0 0 16px rgba(218, 54, 51, 0.3); }
+.risk-Medium { background: rgba(210, 153, 34, 0.15); color: var(--warning-color); border: 1px solid var(--warning-color); }
+.risk-Low { background: rgba(26, 127, 55, 0.15); color: var(--success-color); border: 1px solid var(--success-color); }
+.risk-meter-track {
+    width: 100%;
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+.risk-meter-fill {
+    height: 100%;
+    border-radius: 4px;
+}
+code {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 0.9em;
+    color: var(--primary-color);
+}
+pre {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    overflow-x: auto;
+    position: relative;
+}
+pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--text-primary);
+}
+.copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--dark-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+.copy-btn:hover { color: var(--primary-color); border-color: var(--primary-color); }
+.disclaimer {
+    background: rgba(210, 153, 34, 0.1);
+    border-left: 3px solid var(--warning-color);
+    padding: 14px 18px;
+    border-radius: 4px;
+    margin: 20px 0;
+    color: var(--text-secondary);
+}
+table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+th, td { border: 1px solid var(--border-color); padding: 10px 14px; text-align: left; }
+th { background: var(--card-bg); color: var(--primary-color); }
+ul.checklist, ul.actions { list-style: none; padding-left: 0; }
+ul.checklist li, ul.actions li {
+    padding: 8px 0 8px 30px;
+    position: relative;
+    border-bottom: 1px solid var(--border-color);
+}
+ul.checklist li::before, ul.actions li::before {
+    content: "\2610";
+    position: absolute;
+    left: 0;
+    color: var(--primary-color);
+}
+ul.plain { padding-left: 20px; }
+details {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin: 16px 0;
+    padding: 4px 20px;
+}
+details summary {
+    cursor: pointer;
+    padding: 14px 0;
+    color: var(--primary-color);
+    font-weight: 600;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: "\25B6"; font-size: 0.7rem; transition: transform 0.15s ease; }
+details[open] summary::before { transform: rotate(90deg); }
+details[open] summary { border-bottom: 1px solid var(--border-color); }
+details .tag { margin-left: auto; }
+.footer-note {
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-style: italic;
+}
+@media print {
+    .print-btn { display: none; }
+    body { background: white; color: black; max-width: 100%; }
+    .meta-box, pre, details, table, .disclaimer { background: #f5f5f5; color: black; box-shadow: none; }
+    details { border: 1px solid #ccc; }
+    h1, h2 { color: #000; text-shadow: none; }
+    .copy-btn { display: none; }
+    code { color: #000; }
+}
+</style>
+</head>
+<body>
+<div class="topbar"><div></div><button class="print-btn" onclick="printReport()">🖨️ Print / Save as PDF</button></div>
+<h1>Incident Report — Web/API Exploitation (Injection or Abuse)</h1>
+<div class="meta-box">
+<div><strong>Generated:</strong> 2026-07-20T08:11:38.439731+00:00</div>
+<div><strong>Source → Destination:</strong> <code>60.48.6.241</code> → <code>217.226.227.139</code></div>
+<div><strong>Channel / Protocol:</strong> api_payload / TCP</div>
+<div><strong>Risk Level:</strong> <span class="risk-badge risk-Critical">Critical — 82.9%</span></div>
+<div class="risk-meter-track"><div class="risk-meter-fill" style="width:82.9%; background:var(--accent-color);"></div></div>
+<div style='margin-top:14px'><strong>Confidence:</strong> 66.4% — final_risk_probability=0.83 weighted with cross-signal agreement=0.42 (anomaly_score and phishing_probability partially agree)</div>
+</div>
+<div class="disclaimer">⚠️ <strong>How to read this report:</strong> the Threat Summary, Root Cause, and Executive Summary sections are written by an LLM (Google Gemini), grounded in the real detection data below. Every other section — evidence, commands, detection rules, MITRE mapping, CVE candidates — comes from a fixed, deterministic template, not the LLM. Section headers are labeled so you always know which is which.</div>
+<h2>🧠 Threat Summary <span class="tag llm">LLM-generated</span></h2>
+<p>A critical-risk Web/API Exploitation attempt was detected originating from source IP 60.48.6.241, targeting the `/api/v1/search` endpoint with a POST request containing the payload parameter `&quot;{{7*7}}&quot;` via a curl user agent. The detection is evaluated with a high risk probability of 0.829, driven primarily by anomalous traffic features including a high burst score, failed connection rate, and an active volume of 452 requests per minute. This event is highly significant as it represents an active injection or abuse attempt on an authenticated API endpoint, posing a direct threat to the application&#x27;s integrity.</p>
+<h2>🔍 Root Cause Analysis <span class="tag llm">LLM-generated</span></h2>
+<p>The detection was primarily driven by high `burst_score` and `failed_connection_rate` signals, which, combined with a high request volume of 452 per minute, suggest an automated exploitation attempt from source IP 60.48.6.241. The presence of the `{{7*7}}` payload in a POST request to the `/api/v1/search` endpoint indicates a probable Server-Side Template Injection (SSTI) attack mechanism conducted via a `curl` script. Based on the model’s feature contributions and the `Web/API Exploitation` threat category, this is a probable inference of an injection-based attack rather than a confirmed forensic finding.</p>
+<h2>📋 Executive Summary <span class="tag llm">LLM-generated</span></h2>
+<p>Our security systems successfully detected a critical attempt to exploit our online search service (specifically the `/api/v1/search` system) originating from the external address 60.48.6.241. The attacker used rapid, automated requests in an attempt to inject unauthorized commands directly into our database. If successful, this type of manipulation could lead to system disruption, data exposure, or unauthorized access to our digital environment. The security team is actively reviewing the traffic from this source, verifying that our defenses blocked the malicious payloads, and monitoring our network to prevent further connection spikes.</p>
+<h2>📊 Evidence <span class="tag">template-derived, real SHAP output</span></h2>
+<table><tr><th>Feature</th><th>SHAP Contribution</th></tr>
+<tr><td>burst_score</td><td>+17.003</td></tr>
+<tr><td>failed_connection_rate</td><td>+3.120</td></tr>
+<tr><td>rolling_packet_mean</td><td>+2.582</td></tr>
+<tr><td>connection_density</td><td>+1.411</td></tr>
+<tr><td>traffic_ratio</td><td>+1.385</td></tr>
+</table>
+<p><strong>Raw event content sample:</strong></p><pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code class="">endpoint=/api/v1/search method=POST param=&quot;{{7*7}}&quot; requests_per_min=452 auth_header_present=True user_agent=curl/7.68 anomalous_payload_size=False</code></pre>
+<h2>🎯 MITRE ATT&CK Mapping <span class="tag">template-derived</span></h2>
+<table><tr><th>Tactic</th><th>Technique ID</th><th>Technique Name</th></tr>
+<tr><td>Initial Access</td><td>T1190</td><td>Exploit Public-Facing Application</td></tr>
+<tr><td>Execution</td><td>T1059</td><td>Command and Scripting Interpreter</td></tr>
+<tr><td>Collection</td><td>T1005</td><td>Data from Local System</td></tr>
+</table>
+<h2>⚡ Immediate Actions <span class="tag">template-derived</span></h2>
+<ul class="actions"><li>Isolate/quarantine traffic from source IP 60.48.6.241 pending investigation.</li><li>Preserve logs and relevant packet captures for the affected window before any remediation that could overwrite them.</li><li>Block the source IP at the WAF; add a temporary rate-limit rule on the targeted endpoint.</li><li>Review application logs for successful responses (200/302) to the same payload pattern from other sources.</li><li>Snapshot the affected service/container for forensic review before any restart.</li></ul>
+<details><summary>🐧 Linux Commands <span class="tag">template-derived</span></summary><pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code class=""># Block the source IP at the host firewall
+sudo iptables -A INPUT -s 60.48.6.241 -j DROP
+# Confirm the block is in place
+sudo iptables -L INPUT -v -n | grep 60.48.6.241
+# Capture current network connections for evidence
+ss -tunap &gt; /tmp/soc_evidence_connections_$(date +%s).txt
+# Search web server logs for the same payload pattern
+sudo grep -E &quot;(UNION|OR &#x27;1&#x27;=&#x27;1&#x27;|&lt;script&gt;)&quot; /var/log/nginx/access.log | grep &#x27;60.48.6.241&#x27;
+# Snapshot the container/service for forensic review
+docker commit &lt;container_id&gt; forensic_snapshot_$(date +%s)</code></pre></details>
+<details><summary>🪟 Windows Commands <span class="tag">template-derived</span></summary><pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code class=""># Block the source IP via Windows Firewall
+New-NetFirewallRule -DisplayName &quot;SOC-Block-60.48.6.241&quot; -Direction Inbound -RemoteAddress 60.48.6.241 -Action Block
+# Capture current network connections for evidence
+Get-NetTCPConnection | Export-Csv -Path C:\soc_evidence\connections.csv
+# Search IIS logs for the same payload pattern
+Select-String -Path C:\inetpub\logs\LogFiles\*.log -Pattern &#x27;60.48.6.241&#x27;</code></pre></details>
+<details><summary>🔥 Firewall Rules <span class="tag">template-derived</span></summary><pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code class=""># Generic (iptables) — block
+iptables -A INPUT -s 60.48.6.241 -j DROP
+# Generic (nftables) — block
+nft add rule inet filter input ip saddr 60.48.6.241 drop
+# Cisco ASA — block
+access-list SOC_BLOCK deny ip host 60.48.6.241 any
+# pfSense/OPNsense (alias-based) — add 60.48.6.241 to a &#x27;SOC_Blocklist&#x27; alias and apply the existing deny rule referencing it.</code></pre></details>
+<details><summary>🛡️ YARA Rule <span class="tag">syntax-validated</span></summary><pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code class="">rule SOC_Web_API_60_48_6_241
+{
+    meta:
+        description = &quot;Auto-generated by SOC Assistant (Module 4) from a flagged high-risk event&quot;
+        source_ip = &quot;60.48.6.241&quot;
+        generated = &quot;template-driven, not LLM-authored — review before deployment&quot;
+
+    strings:
+        $ioc_0 = &quot;60.48.6.241&quot; nocase
+
+    condition:
+        any of ($ioc_*)
+}</code></pre></details>
+<details><summary>🛡️ Snort Rule <span class="tag">syntax-validated</span></summary><pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code class="">alert tcp 60.48.6.241 any -&gt; $HOME_NET any (msg:&quot;SOC: Web/API Exploitation (Injection or Abuse) from 60.48.6.241&quot;; content:&quot;60.48.6.241&quot;; nocase; sid:1000001; rev:1; classtype:trojan-activity;)</code></pre></details>
+<details><summary>🛡️ Sigma Rule <span class="tag">syntax-validated</span></summary><pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code class="">title: SOC Auto-Generated Detection — Web/API Exploitation (Injection or Abuse)
+status: experimental
+description: Generated by SOC Assistant (Module 4) from a flagged high-risk event. Review before deployment.
+logsource:
+    category: network
+    product: generic
+detection:
+    selection:
+        src_ip: &#x27;60.48.6.241&#x27;
+        payload|contains:
+        - &#x27;60.48.6.241&#x27;
+    condition: selection
+level: high
+tags:
+    - soc.autogenerated
+</code></pre></details>
+<details><summary>🗂️ CVE Candidates <span class="tag">illustrative only</span></summary><div class="disclaimer">Illustrative CVEs commonly associated with this attack category — NOT a confirmed match for this specific event. This platform has no software/version inventory for the affected host; confirm applicability against actual asset data before acting on any of these.</div><table><tr><th>CVE ID</th><th>Name</th><th>Relevance Note</th></tr><tr><td>CVE-2021-44228</td><td>Log4Shell (Apache Log4j2 remote code execution)</td><td>Relevant if the targeted API backend logs user-controlled input via a vulnerable Log4j2 version.</td></tr><tr><td>CVE-2017-5638</td><td>Apache Struts 2 OGNL injection RCE</td><td>Relevant if the API/web backend runs an unpatched Apache Struts 2 (Content-Type header RCE).</td></tr></table></details>
+<details><summary>🔧 Recovery Steps <span class="tag">template-derived</span></summary><ul class="plain"><li>Confirm the source of compromise is fully contained (no active sessions/connections remain).</li><li>Restore affected accounts/services from known-good state; rotate any credentials that may have been exposed.</li><li>Re-scan previously affected hosts for persistence mechanisms before returning them to production.</li><li>Validate that the deployed firewall/detection rules from this playbook are active and correctly matching.</li><li>Monitor the source IP/domain/account for 14 days for renewed activity before closing the incident.</li></ul></details>
+<details><summary>✅ Post-Incident Checklist <span class="tag">template-derived</span></summary><ul class="checklist"><li>Root cause confirmed and documented (not just inferred from SHAP evidence)</li><li>All immediate actions completed and verified</li><li>Detection rules (YARA/Snort/Sigma) deployed to production and validated against a known-good test case</li><li>Affected users/systems notified per incident communication policy</li><li>Playbook and evidence archived for compliance / audit</li><li>Lessons-learned review scheduled with the team</li><li>Any newly-identified detection gaps fed back into Module 1/Module 2 training data</li></ul></details>
+<div class="footer-note">Generated by CyberShield-AI Module 4 — generate_response_playbook(). LLM sections: threat_summary, root_cause, executive_summary. Template sections: evidence, confidence_score, affected_systems, immediate_actions, linux_commands, windows_commands, firewall_rules, yara_rule, snort_rule, sigma_rule, mitre_attack_mapping, cve_suggestions, recovery_steps, post_incident_checklist.</div>
+<script>
+function copyCode(btn) {
+    const code = btn.parentElement.querySelector('code').innerText;
+    const showCopied = () => {
+        const orig = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => { btn.innerText = orig; }, 1500);
+    };
+    // navigator.clipboard requires a "secure context" (https/localhost) and
+    // is BLOCKED on file:// pages, which is exactly how this report is
+    // normally opened (double-clicked from disk). Confirmed directly: it
+    // throws "Write permission denied" on file://, not a hypothetical edge
+    // case. Fall back to the older execCommand method, which does work
+    // there, instead of silently failing with no feedback to the user.
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(code).then(showCopied).catch(() => fallbackCopy(code, showCopied));
+    } else {
+        fallbackCopy(code, showCopied);
+    }
+}
+function fallbackCopy(text, onSuccess) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try {
+        document.execCommand('copy');
+        onSuccess();
+    } catch (e) {
+        alert('Copy failed - please select and copy the text manually.');
+    }
+    document.body.removeChild(ta);
+}
+function printReport() {
+    document.querySelectorAll('details').forEach(d => d.setAttribute('open', ''));
+    window.print();
+}
+</script>
+</body>
+</html>
