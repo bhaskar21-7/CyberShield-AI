@@ -1,4 +1,4 @@
-# CyberShield AI - Project Understanding Guide
+# Bayesian Sentinel - Project Understanding Guide
 
 > This document explains **what problem we are solving**, **why it matters**, and **how each module contributes** to the overall solution.
 
@@ -39,7 +39,7 @@ This is the core problem our project solves.
 
 # 2. Our Solution
 
-CyberShield AI is an Explainable AI-powered Cybersecurity Threat Detection Platform.
+Bayesian Sentinel is an Explainable AI-powered Cybersecurity Threat Detection Platform.
 
 Instead of relying only on Generative AI, the system combines:
 
@@ -359,7 +359,7 @@ This approach is:
 
 # 11. Real-World Impact
 
-CyberShield AI helps organizations:
+Bayesian Sentinel helps organizations:
 
 - Detect suspicious network behaviour earlier
 - Reduce alert fatigue
@@ -383,6 +383,6 @@ CyberShield AI helps organizations:
 
 # Final Vision
 
-CyberShield AI is not just an AI chatbot.
+Bayesian Sentinel is not just an AI chatbot.
 
 It is a layered cybersecurity decision-support platform that combines Statistical Learning, Machine Learning, Bayesian Inference, Explainable AI, and Generative AI to help organizations detect, understand, and respond to cyber threats efficiently.
