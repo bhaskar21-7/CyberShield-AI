@@ -98,6 +98,15 @@ st.markdown(
             --danger: #DA3633;
         }
         
+        /* Global dark theme — targets Streamlit's actual app container.
+           Plain `body {}` doesn't reliably reach content in modern Streamlit
+           since the app renders inside [data-testid="stAppViewContainer"];
+           config.toml sets the base theme, this is a defensive backup. */
+        [data-testid="stAppViewContainer"], [data-testid="stHeader"], .main {
+            background-color: var(--dark-bg);
+            color: #E6EDF3;
+        }
+        
         body {
             background-color: var(--dark-bg);
             color: #E6EDF3;
@@ -161,7 +170,23 @@ st.markdown(
         .kpi-trend.up { color: #1a7f37; }
         .kpi-trend.down { color: #da3633; }
         
-        /* Navigation */
+        /* Top status blocks (CURRENT TIME / SYSTEM / THREAT) — explicit
+           nowrap + min-width prevents these from visually overlapping,
+           which happened because they had no defined box before. */
+        .status-block {
+            text-align: center;
+            color: #8b949e;
+            font-size: 12px;
+            white-space: nowrap;
+            min-width: 110px;
+            padding: 4px 8px;
+        }
+        
+        .status-block strong {
+            display: block;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
         .soc-nav {
             background: rgba(22, 27, 34, 0.9);
             backdrop-filter: blur(10px);
@@ -289,7 +314,7 @@ with st.container():
     with col_nav2:
         current_time = datetime.now().strftime("%H:%M:%S")
         st.markdown(
-            f"<div style='text-align: center; color: #8b949e; font-size: 12px;'><strong>CURRENT TIME</strong><br>{current_time}</div>",
+            f"<div class='status-block'><strong>CURRENT TIME</strong>{current_time}</div>",
             unsafe_allow_html=True,
         )
     
@@ -297,7 +322,7 @@ with st.container():
         system_health = 98  # Simulated
         health_color = "🟢" if system_health > 80 else "🟡" if system_health > 50 else "🔴"
         st.markdown(
-            f"<div style='text-align: center; color: #8b949e; font-size: 12px;'><strong>SYSTEM</strong><br>{health_color} {system_health}%</div>",
+            f"<div class='status-block'><strong>SYSTEM</strong>{health_color} {system_health}%</div>",
             unsafe_allow_html=True,
         )
     
@@ -305,7 +330,7 @@ with st.container():
         threat_level = "LOW" if df["final_risk_probability"].mean() < 0.4 else "MEDIUM" if df["final_risk_probability"].mean() < 0.7 else "HIGH"
         threat_color = {"LOW": "🟢", "MEDIUM": "🟡", "HIGH": "🔴"}[threat_level]
         st.markdown(
-            f"<div style='text-align: center; color: #8b949e; font-size: 12px;'><strong>THREAT</strong><br>{threat_color} {threat_level}</div>",
+            f"<div class='status-block'><strong>THREAT</strong>{threat_color} {threat_level}</div>",
             unsafe_allow_html=True,
         )
 
@@ -318,13 +343,6 @@ st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
 st.subheader("📊 Key Performance Indicators")
 
 kpi_col1, kpi_col2, kpi_col3, kpi_col4, kpi_col5, kpi_col6 = st.columns(6)
-
-# Helper function to create KPI cards with sparklines
-def create_kpi_sparkline_data(series):
-    """Generate synthetic sparkline data (last 12 points)"""
-    if len(series) > 12:
-        return series.tail(12).values.tolist()
-    return series.values.tolist()
 
 total_events = len(df)
 threats_detected = len(df[df["final_risk_probability"] > 0.5])
@@ -339,7 +357,7 @@ with kpi_col1:
         <div class='kpi-card'>
             <div class='kpi-label'>📦 Total Events</div>
             <div class='kpi-value'>{total_events:,}</div>
-            <div class='kpi-trend up'>↑ +12%</div>
+            
         </div>
         """,
         unsafe_allow_html=True,
@@ -351,7 +369,7 @@ with kpi_col2:
         <div class='kpi-card'>
             <div class='kpi-label'>🎯 Threats Detected</div>
             <div class='kpi-value'>{threats_detected}</div>
-            <div class='kpi-trend down'>↓ -5%</div>
+            
         </div>
         """,
         unsafe_allow_html=True,
@@ -363,7 +381,7 @@ with kpi_col3:
         <div class='kpi-card'>
             <div class='kpi-label'>🚨 Critical Alerts</div>
             <div class='kpi-value'>{critical_alerts}</div>
-            <div class='kpi-trend up'>↑ +8%</div>
+            
         </div>
         """,
         unsafe_allow_html=True,
@@ -375,7 +393,7 @@ with kpi_col4:
         <div class='kpi-card'>
             <div class='kpi-label'>⚠️ Avg Risk Score</div>
             <div class='kpi-value'>{avg_risk_score:.1f}%</div>
-            <div class='kpi-trend up'>↑ +3%</div>
+            
         </div>
         """,
         unsafe_allow_html=True,
@@ -387,7 +405,7 @@ with kpi_col5:
         <div class='kpi-card'>
             <div class='kpi-label'>🛡️ Blocked Attacks</div>
             <div class='kpi-value'>{blocked_attacks}</div>
-            <div class='kpi-trend down'>↓ -2%</div>
+            
         </div>
         """,
         unsafe_allow_html=True,
@@ -399,7 +417,7 @@ with kpi_col6:
         <div class='kpi-card'>
             <div class='kpi-label'>✅ System Health</div>
             <div class='kpi-value'>{system_health_pct}%</div>
-            <div class='kpi-trend up'>↑ +1%</div>
+            
         </div>
         """,
         unsafe_allow_html=True,
@@ -520,17 +538,14 @@ st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
 
 st.subheader("🔥 Attack Heatmap: Frequency Over Time")
 
-# Create synthetic attack categories for heatmap
+# Group by real channel (sms/url/login_attempt/email/api_payload) instead of
+# a randomly-assigned fake category — this is real data from the pipeline,
+# not a placeholder.
 df_heatmap = df.copy()
-df_heatmap["hour"] = pd.to_datetime(df_heatmap["timestamp"]).dt.hour
 df_heatmap["day"] = pd.to_datetime(df_heatmap["timestamp"]).dt.day_name()
 
-# Randomly assign attack categories (in real scenario, this would come from data)
-attack_categories = ["Network", "Email", "API", "Web", "Insider", "Malware"]
-df_heatmap["attack_category"] = np.random.choice(attack_categories, size=len(df_heatmap))
-
-heatmap_data = df_heatmap.groupby(["day", "attack_category"]).size().reset_index(name="count")
-heatmap_pivot = heatmap_data.pivot(index="attack_category", columns="day", values="count").fillna(0)
+heatmap_data = df_heatmap.groupby(["day", "channel"]).size().reset_index(name="count")
+heatmap_pivot = heatmap_data.pivot(index="channel", columns="day", values="count").fillna(0)
 
 # Reorder days
 day_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -559,7 +574,7 @@ fig_heatmap.update_layout(
     plot_bgcolor="rgba(22, 27, 34, 0.5)",
     paper_bgcolor="rgba(22, 27, 34, 0.3)",
     xaxis_title="Day of Week",
-    yaxis_title="Attack Category",
+    yaxis_title="Channel",
 )
 
 st.plotly_chart(fig_heatmap, use_container_width=True, key="attack_heatmap")
@@ -630,7 +645,7 @@ alerts_table_data.columns = ["Timestamp", "Source IP", "Dest IP", "Channel", "Ri
 alerts_table_data["Risk"] = alerts_table_data["Risk"].map(
     {"Low": "🟢 Low", "Medium": "🟡 Medium", "Critical": "🔴 Critical"}
 )
-alerts_table_data["Attack"] = alerts_table_data["Attack"].map(
+alerts_table_data["Attack"] = alerts_table_data["Attack"].astype(bool).map(
     {True: "✓ Yes", False: "✗ No"}
 )
 
