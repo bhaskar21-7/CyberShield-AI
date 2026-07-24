@@ -16,6 +16,7 @@ Run:
 
 import os
 import sys
+import streamlit.components.v1 as components
 from datetime import datetime, timedelta, timezone
 import json
 
@@ -305,10 +306,30 @@ with st.container():
         )
     
     with col_nav2:
-        current_time = datetime.now(timezone.utc).strftime("%H:%M:%S")
-        st.markdown(
-            f"<div class='status-block'><strong>CURRENT TIME (UTC)</strong>{current_time}</div>",
-            unsafe_allow_html=True,
+        # Server-side datetime.now() can only ever know the SERVER's
+        # timezone, not the visitor's — on Streamlit Cloud that's UTC,
+        # which is accurate but not what a viewer expects from a
+        # "current time" readout. This runs a tiny JS clock in the
+        # visitor's own browser instead, so it always matches their
+        # actual local time regardless of where the app is hosted.
+        components.html(
+            """
+            <div style="text-align:center; font-size:12px; font-family:sans-serif;
+                        color:#57606A; padding:4px 8px; white-space:nowrap;">
+                <strong style="display:block; letter-spacing:1px; margin-bottom:4px;
+                               color:#1F2328;">CURRENT TIME</strong>
+                <span id="clock"></span>
+            </div>
+            <script>
+                function tick() {
+                    const el = document.getElementById("clock");
+                    if (el) { el.textContent = new Date().toLocaleTimeString(); }
+                }
+                tick();
+                setInterval(tick, 1000);
+            </script>
+            """,
+            height=50,
         )
     
     with col_nav3:
