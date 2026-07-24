@@ -16,7 +16,7 @@ Run:
 
 import os
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import json
 
 import numpy as np
@@ -305,9 +305,9 @@ with st.container():
         )
     
     with col_nav2:
-        current_time = datetime.now().strftime("%H:%M:%S")
+        current_time = datetime.now(timezone.utc).strftime("%H:%M:%S")
         st.markdown(
-            f"<div class='status-block'><strong>CURRENT TIME</strong>{current_time}</div>",
+            f"<div class='status-block'><strong>CURRENT TIME (UTC)</strong>{current_time}</div>",
             unsafe_allow_html=True,
         )
     
