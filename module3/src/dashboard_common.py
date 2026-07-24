@@ -5,6 +5,7 @@ Shared utilities for the SOC dashboard.
 """
 
 import os
+import subprocess
 import sys
 from pathlib import Path
 import pandas as pd
@@ -21,12 +22,73 @@ RISK_COLORS = {
     "Critical": "#da3633",  # Red
 }
 
+REPO_ROOT = Path(__file__).parent.parent.parent
+
+
+def _artifacts_missing():
+    """Check for the specific files each module's training step produces."""
+    checks = [
+        REPO_ROOT / "module1" / "models" / "isolation_forest.pkl",
+        REPO_ROOT / "module2" / "models" / "lightgbm_model.pkl",
+        REPO_ROOT / "module3" / "data" / "unified_threat_data.csv",
+    ]
+    return [p for p in checks if not p.exists()]
+
+
+def ensure_pipeline_built():
+    """
+    Streamlit Community Cloud (and any fresh clone) only runs
+    `pip install` + `streamlit run` — it never runs train.py or
+    build_dataset.py. Those generated artifacts are correctly gitignored
+    (not source), which means a fresh deploy has no models and no dataset
+    unless something builds them first. This does that once, transparently,
+    on first load, instead of the dashboard hitting a dead-end
+    "dataset is empty" error with no way to recover from the browser.
+    """
+    missing = _artifacts_missing()
+    if not missing:
+        return
+
+    with st.spinner(
+        "First-time setup: training models and building the dataset "
+        "(only happens once per deployment, ~30-60 seconds)..."
+    ):
+        steps = [
+            ("Module 1 (anomaly detection)", REPO_ROOT / "module1" / "src" / "train.py"),
+            ("Module 2 (phishing classification)", REPO_ROOT / "module2" / "src" / "train.py"),
+            ("Module 3 (unified dataset)", REPO_ROOT / "module3" / "src" / "build_dataset.py"),
+        ]
+        for label, script_path in steps:
+            result = subprocess.run(
+                [sys.executable, str(script_path)],
+                cwd=str(script_path.parent),
+                capture_output=True,
+                text=True,
+                timeout=600,
+            )
+            if result.returncode != 0:
+                st.error(
+                    f"First-time setup failed at {label}.\n\n"
+                    f"stdout (last 2000 chars):\n{result.stdout[-2000:]}\n\n"
+                    f"stderr (last 2000 chars):\n{result.stderr[-2000:]}"
+                )
+                st.stop()
+
+    still_missing = _artifacts_missing()
+    if still_missing:
+        st.error(
+            "Setup ran without error but expected files are still missing: "
+            + ", ".join(str(p) for p in still_missing)
+        )
+        st.stop()
+
 @st.cache_data(ttl=300)
 def get_dataset():
     """
     Load unified threat dataset from module3/data/unified_threat_data.csv
     Returns empty DataFrame if file doesn't exist.
     """
+    ensure_pipeline_built()
     data_path = Path(__file__).parent.parent / "data" / "unified_threat_data.csv"
     
     if not data_path.exists():

@@ -1,0 +1,41 @@
+# Root-level requirements.txt — required for Streamlit Community Cloud.
+# Streamlit Cloud looks for a file with exactly this name, either next to
+# the main app file or here at the repo root. It does NOT recognize
+# requirements-all.txt by that alternate name, which is why the deployed
+# app was failing with ModuleNotFoundError despite requirements-all.txt
+# existing and working fine for local/manual installs.
+#
+# This is the union of all 4 modules' dependencies, since dashboard_common.py
+# can bootstrap-train Module 1 and Module 2 on first deploy if their
+# artifacts are missing (see ensure_pipeline_built() in module3/src/
+# dashboard_common.py) — so the dashboard's runtime environment needs
+# every module's dependencies available, not just module3's own.
+#
+# Versions pinned to match requirements-all.txt exactly. If you update one,
+# update the other.
+
+# Core scientific stack
+numpy==2.4.6
+pandas==3.0.3
+scipy==1.18.0
+scikit-learn==1.9.0
+
+# Machine Learning & Model Training
+lightgbm==4.6.0
+xgboost==3.3.0
+
+# Explainability & Visualization
+shap==0.52.0
+lime==0.2.0.1
+plotly==6.9.0
+matplotlib==3.11.1
+
+# Dashboard
+streamlit==1.59.2
+
+# LLM Integration (Google Gemini — free tier, no credit card, via plain HTTP)
+requests==2.34.2
+
+# Utilities
+joblib==1.5.3
+pyyaml==6.0.3
