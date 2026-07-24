@@ -28,6 +28,20 @@ hackathons alike.
 
 ---
 
+## 🔗 Live Demo
+
+| | |
+|---|---|
+| **📊 Live Dashboard** | [bayesian-sentinelgit.streamlit.app](https://bayesian-sentinelgit.streamlit.app) |
+| **🌐 Landing Page** | [bhaskar21-7.github.io/Bayesian-Sentinel](https://bhaskar21-7.github.io/Bayesian-Sentinel/) |
+
+No install required for either link. The dashboard's first load after a
+period of inactivity takes ~30-60 seconds (it trains the underlying models
+fresh on that first request) — a loading spinner explains this, it isn't
+stuck.
+
+---
+
 ## 📸 Screenshots
 
 ### Landing Page
